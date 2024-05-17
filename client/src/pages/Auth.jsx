@@ -76,7 +76,7 @@ function Auth() {
                             {tabIndex === 0 ? 'Login' : 'Registration'}
                         </Typography>
                     </header>
-                    <Tabs value={tabIndex} onChange={handleTabChange} centered className="custom-tab">
+                    <Tabs value={tabIndex} onChange={handleTabChange} centered className="custom-tabs">
                         <Tab label="Login" />
                         <Tab label="Register" />
                     </Tabs>
@@ -89,6 +89,21 @@ function Auth() {
                                 value={loginEmail}
                                 onChange={(e) => setLoginEmail(e.target.value)}
                                 required
+                                width="270px"
+                                borderRadius="20px"
+                                inputColor="white"
+                                padding="15px"
+                                labelColor="rgba(255, 255, 255, 0.8)"
+                                labelMarginTop="-5px"
+                                labelMarginLeft="0px"
+                                labelFocusedColor="rgba(255, 255, 255, 1)"
+                                labelFocusedMarginTop="-5px"
+                                labelFocusedMarginLeft="-10px"
+                                borderColor="rgba(255, 255, 255, 0.5)"
+                                hoverBorderColor="rgba(255, 255, 255, 0.8)"
+                                focusedBorderColor="rgba(255, 255, 255, 1)"
+                                marginTop="0px"
+                                marginBottom="0px"
                             />
                             <CustomTextField
                                 label="Password"
@@ -96,6 +111,21 @@ function Auth() {
                                 value={loginPassword}
                                 onChange={(e) => setLoginPassword(e.target.value)}
                                 required
+                                width="270px"
+                                borderRadius="20px"
+                                inputColor="white"
+                                padding="15px"
+                                labelColor="rgba(255, 255, 255, 0.8)"
+                                labelMarginTop="-5px"
+                                labelMarginLeft="0px"
+                                labelFocusedColor="rgba(255, 255, 255, 1)"
+                                labelFocusedMarginTop="-5px"
+                                labelFocusedMarginLeft="-10px"
+                                borderColor="rgba(255, 255, 255, 0.5)"
+                                hoverBorderColor="rgba(255, 255, 255, 0.8)"
+                                focusedBorderColor="rgba(255, 255, 255, 1)"
+                                marginTop="10px"
+                                marginBottom="10px"
                             />
                             <CustomButton
                                 type="submit"
@@ -107,8 +137,8 @@ function Auth() {
                                 hoverTextOpacity={1}
                                 width="180px"
                                 height="auto"
-                                marginTop="20px"
-                                marginLeft="auto"
+                                marginTop="10px"
+                                marginLeft="20px"
                                 marginBottom="20px"
                             >
                                 {loading ? <CircularProgress size={24} /> : 'Login'}
@@ -123,6 +153,21 @@ function Auth() {
                                 value={registerFullName}
                                 onChange={(e) => setRegisterFullName(e.target.value)}
                                 required
+                                width="270px"
+                                borderRadius="20px"
+                                inputColor="white"
+                                padding="15px"
+                                labelColor="rgba(255, 255, 255, 0.8)"
+                                labelMarginTop="-5px"
+                                labelMarginLeft="0px"
+                                labelFocusedColor="rgba(255, 255, 255, 1)"
+                                labelFocusedMarginTop="-5px"
+                                labelFocusedMarginLeft="-10px"
+                                borderColor="rgba(255, 255, 255, 0.5)"
+                                hoverBorderColor="rgba(255, 255, 255, 0.8)"
+                                focusedBorderColor="rgba(255, 255, 255, 1)"
+                                marginTop="0px"
+                                marginBottom="10px"
                             />
                             <CustomTextField
                                 label="Email"
@@ -130,6 +175,21 @@ function Auth() {
                                 value={registerEmail}
                                 onChange={(e) => setRegisterEmail(e.target.value)}
                                 required
+                                width="270px"
+                                borderRadius="20px"
+                                inputColor="white"
+                                padding="15px"
+                                labelColor="rgba(255, 255, 255, 0.8)"
+                                labelMarginTop="-5px"
+                                labelMarginLeft="0px"
+                                labelFocusedColor="rgba(255, 255, 255, 1)"
+                                labelFocusedMarginTop="-5px"
+                                labelFocusedMarginLeft="-10px"
+                                borderColor="rgba(255, 255, 255, 0.5)"
+                                hoverBorderColor="rgba(255, 255, 255, 0.8)"
+                                focusedBorderColor="rgba(255, 255, 255, 1)"
+                                marginTop="0px"
+                                marginBottom="0px"
                             />
                             <CustomTextField
                                 label="Password"
@@ -137,6 +197,21 @@ function Auth() {
                                 value={registerPassword}
                                 onChange={(e) => setRegisterPassword(e.target.value)}
                                 required
+                                width="270px"
+                                borderRadius="20px"
+                                inputColor="white"
+                                padding="15px"
+                                labelColor="rgba(255, 255, 255, 0.8)"
+                                labelMarginTop="-5px"
+                                labelMarginLeft="0px"
+                                labelFocusedColor="rgba(255, 255, 255, 1)"
+                                labelFocusedMarginTop="-5px"
+                                labelFocusedMarginLeft="-10px"
+                                borderColor="rgba(255, 255, 255, 0.5)"
+                                hoverBorderColor="rgba(255, 255, 255, 0.8)"
+                                focusedBorderColor="rgba(255, 255, 255, 1)"
+                                marginTop="10px"
+                                marginBottom="0px"
                             />
                             <CustomButton
                                 type="submit"
