@@ -36,17 +36,21 @@ function Auth() {
         if (registrationSuccess) {
             setTabIndex(0);
             setLoginEmail(registerEmail);
+            resetRegFields();
         }
+        
         setDialog(prev => ({ ...prev, open: false }));
         setRegistrationSuccess(false);  // Reset the registration success state
     };
 
-    const resetFields = () => {
-        setLoginEmail('');
-        setLoginPassword('');
+    const resetRegFields = () => {
         setRegisterFullName('');
         setRegisterEmail('');
         setRegisterPassword('');
+    };
+    const resetLogFields = () => {
+        setLoginEmail('');
+        setLoginPassword('');
     };
 
     const handleSubmit = async (e, type) => {
@@ -76,7 +80,6 @@ function Auth() {
             if (response.ok) {
                 setRegistrationSuccess(true);  // Set the registration success state
             }
-            resetFields(); // Reset fields after submission
         } catch (err) {
             setError('An unexpected error occurred');
         } finally {
