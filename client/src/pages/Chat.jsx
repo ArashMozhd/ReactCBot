@@ -1,8 +1,17 @@
-import React from "react";
-import Navbar from "../components/Navbar";
+// Chat.jsx
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 function Chat() {
-  return <div><Navbar /></div>;
+    const location = useLocation();
+    const { fullName } = location.state || {};
+
+    return (
+        <div>
+            <h1>Welcome to the Chat, {fullName}!</h1>
+            {/* Chat components or content */}
+        </div>
+    );
 }
 
 export default Chat;

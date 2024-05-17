@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Typography, Tabs, Tab, CircularProgress } from '@mui/material';
 import CustomButton from '../components/CustomButton';
 import CustomTextField from '../components/CustomTextField';
@@ -26,6 +27,7 @@ function Auth() {
         color: ''
     });
     const [registrationSuccess, setRegistrationSuccess] = useState(false);
+    const navigate = useNavigate();
 
     const handleTabChange = (event, newIndex) => {
         setTabIndex(newIndex);
@@ -36,21 +38,17 @@ function Auth() {
         if (registrationSuccess) {
             setTabIndex(0);
             setLoginEmail(registerEmail);
-            resetRegFields();
         }
-        
         setDialog(prev => ({ ...prev, open: false }));
         setRegistrationSuccess(false);  // Reset the registration success state
     };
 
-    const resetRegFields = () => {
+    const resetFields = () => {
+        setLoginEmail('');
+        setLoginPassword('');
         setRegisterFullName('');
         setRegisterEmail('');
         setRegisterPassword('');
-    };
-    const resetLogFields = () => {
-        setLoginEmail('');
-        setLoginPassword('');
     };
 
     const handleSubmit = async (e, type) => {
@@ -78,8 +76,18 @@ function Auth() {
                 color: ''
             });
             if (response.ok) {
-                setRegistrationSuccess(true);  // Set the registration success state
+                if (type === 'register') {
+                    setRegistrationSuccess(true);
+                } else {
+                    localStorage.setItem('token', data.token);
+                    const userResponse = await fetch('http://127.0.0.1:8000/user', {
+                        headers: { 'Authorization': `Bearer ${data.token}` }
+                    });
+                    const userData = await userResponse.json();
+                    navigate('/home', { state: { fullName: userData.full_name } });
+                }
             }
+            resetFields(); // Reset fields after submission
         } catch (err) {
             setError('An unexpected error occurred');
         } finally {
