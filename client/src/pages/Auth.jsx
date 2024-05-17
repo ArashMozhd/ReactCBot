@@ -25,6 +25,7 @@ function Auth() {
         transparency: 0.9,
         color: ''
     });
+    const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
     const handleTabChange = (event, newIndex) => {
         setTabIndex(newIndex);
@@ -32,7 +33,20 @@ function Auth() {
     };
 
     const handleDialogClose = () => {
+        if (registrationSuccess) {
+            setTabIndex(0);
+            setLoginEmail(registerEmail);
+        }
         setDialog(prev => ({ ...prev, open: false }));
+        setRegistrationSuccess(false);  // Reset the registration success state
+    };
+
+    const resetFields = () => {
+        setLoginEmail('');
+        setLoginPassword('');
+        setRegisterFullName('');
+        setRegisterEmail('');
+        setRegisterPassword('');
     };
 
     const handleSubmit = async (e, type) => {
@@ -59,6 +73,10 @@ function Auth() {
                 transparency: 0.8,
                 color: ''
             });
+            if (response.ok) {
+                setRegistrationSuccess(true);  // Set the registration success state
+            }
+            resetFields(); // Reset fields after submission
         } catch (err) {
             setError('An unexpected error occurred');
         } finally {
