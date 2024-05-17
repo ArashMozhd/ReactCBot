@@ -17,12 +17,14 @@ function Auth() {
     const [registerPassword, setRegisterPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [openDialog, setOpenDialog] = useState(false);
-    const [dialogType, setDialogType] = useState('success');
-    const [dialogTitle, setDialogTitle] = useState('');
-    const [dialogMessage, setDialogMessage] = useState('');
-    const [dialogTransparency, setDialogTransparency] = useState(0.9);
-    const [dialogColor, setDialogColor] = useState('');
+    const [dialog, setDialog] = useState({
+        open: false,
+        type: 'success',
+        title: '',
+        message: '',
+        transparency: 0.9,
+        color: ''
+    });
 
     const handleTabChange = (event, newIndex) => {
         setTabIndex(newIndex);
@@ -30,91 +32,57 @@ function Auth() {
     };
 
     const handleDialogClose = () => {
-        setOpenDialog(false);
+        setDialog(prev => ({ ...prev, open: false }));
     };
 
-    const handleLogin = async (e) => {
+    const handleSubmit = async (e, type) => {
         e.preventDefault();
         setLoading(true);
         setError('');
-        const response = await fetch('http://127.0.0.1:8000/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: loginEmail, password: loginPassword }),
-        });
-        setLoading(false);
-        if (response.ok) {
-            setDialogType('success');
-            setDialogTitle('Awesome!');
-            setDialogMessage('Login successful');
-        } else {
+        const url = type === 'login' ? 'http://127.0.0.1:8000/login' : 'http://127.0.0.1:8000/register';
+        const body = type === 'login'
+            ? JSON.stringify({ email: loginEmail, password: loginPassword })
+            : JSON.stringify({ full_name: registerFullName, email: registerEmail, password: registerPassword });
+        
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body
+            });
             const data = await response.json();
-            setDialogType('failure');
-            setDialogTitle('Sorry!');
-            setDialogMessage(data.message || 'Login failed');
+            setDialog({
+                open: true,
+                type: response.ok ? 'success' : 'failure',
+                title: response.ok ? 'Awesome!' : 'Sorry!',
+                message: data.message || (response.ok ? 'Operation successful' : 'Operation failed'),
+                transparency: 0.8,
+                color: ''
+            });
+        } catch (err) {
+            setError('An unexpected error occurred');
+        } finally {
+            setLoading(false);
         }
-        setDialogTransparency(0.8);
-        setDialogColor('');
-        setOpenDialog(true);
-    };
-
-    const handleRegister = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
-        const response = await fetch('http://127.0.0.1:8000/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ full_name: registerFullName, email: registerEmail, password: registerPassword }),
-        });
-        setLoading(false);
-        if (response.ok) {
-            setDialogType('success');
-            setDialogTitle('Awesome!');
-            setDialogMessage('Registration succeeded!');
-        } else {
-            const data = await response.json();
-            setDialogType('failure');
-            setDialogTitle('Sorry!');
-            setDialogMessage(data.message || 'Registration failed!');
-        }
-        setDialogTransparency(0.8);
-        setDialogColor('');
-        setOpenDialog(true);
     };
 
     return (
-        <div className="login-page-1" style={{ opacity: 0.8 }}>
+        <div className="login-page-1">
             <div className="login-page-1-wrapper">
                 <article>
-                    <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <img src={tabIndex === 0 ? loginLogo : registerLogo} alt="Logo" style={{ width: 50, height: 50, marginRight: 10 }} />
-                        <Typography 
-                            variant="h5" 
-                            component="h1" 
-                            gutterBottom 
-                            align="center" 
-                            sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: '500' }}
-                        >
+                    <header>
+                        <img src={tabIndex === 0 ? loginLogo : registerLogo} alt="Logo" className="auth-logo" />
+                        <Typography variant="h5" component="h1" gutterBottom align="center" className="auth-header">
                             {tabIndex === 0 ? 'Login' : 'Registration'}
                         </Typography>
                     </header>
-                    <Tabs 
-                        value={tabIndex} 
-                        onChange={handleTabChange} 
-                        centered
-                        sx={{
-                            '& .MuiTabs-indicator': { backgroundColor: 'darkgray' },
-                            '& .MuiTab-root': { color: 'rgba(0, 0, 0, 0.54)' },
-                            '& .Mui-selected': { color: 'darkgray' }
-                        }}
-                    >
+                    <Tabs value={tabIndex} onChange={handleTabChange} centered className="custom-tab">
                         <Tab label="Login" />
                         <Tab label="Register" />
                     </Tabs>
                     {error && <Typography color="error" align="center">{error}</Typography>}
                     {tabIndex === 0 && (
-                        <form onSubmit={handleLogin} style={{ textAlign: 'center' }}>
+                        <form onSubmit={(e) => handleSubmit(e, 'login')} className="auth-form">
                             <CustomTextField
                                 label="Email"
                                 type="email"
@@ -129,13 +97,26 @@ function Auth() {
                                 onChange={(e) => setLoginPassword(e.target.value)}
                                 required
                             />
-                            <CustomButton type="submit">
+                            <CustomButton
+                                type="submit"
+                                roundness="25px"
+                                transparency={0.5}
+                                backgroundColor="rgba(255, 255, 255, 0.1)"
+                                textSize="18px"
+                                textColor="white"
+                                hoverTextOpacity={1}
+                                width="180px"
+                                height="auto"
+                                marginTop="20px"
+                                marginLeft="auto"
+                                marginBottom="20px"
+                            >
                                 {loading ? <CircularProgress size={24} /> : 'Login'}
                             </CustomButton>
                         </form>
                     )}
                     {tabIndex === 1 && (
-                        <form onSubmit={handleRegister} style={{ textAlign: 'center' }}>
+                        <form onSubmit={(e) => handleSubmit(e, 'register')} className="auth-form">
                             <CustomTextField
                                 label="Full Name"
                                 type="text"
@@ -157,7 +138,20 @@ function Auth() {
                                 onChange={(e) => setRegisterPassword(e.target.value)}
                                 required
                             />
-                            <CustomButton type="submit" className="submit-btn" width='50'>
+                            <CustomButton
+                                type="submit"
+                                roundness="25px"
+                                transparency={0.5}
+                                backgroundColor="rgba(255, 255, 255, 0.1)"
+                                textSize="18px"
+                                textColor="white"
+                                hoverTextOpacity={1}
+                                width="180px"
+                                height="auto"
+                                marginTop="20px"
+                                marginLeft="auto"
+                                marginBottom="15px"
+                            >
                                 {loading ? <CircularProgress size={24} /> : 'Register'}
                             </CustomButton>
                         </form>
@@ -173,15 +167,14 @@ function Auth() {
             </div>
             <FireflyAnimation side="top" speedRange={[10, 20]} intervalRange={[100, 300]} />
             <FireflyAnimation side="left" speedRange={[10, 20]} intervalRange={[100, 300]} />
-
             <NotificationDialog 
-                open={openDialog} 
+                open={dialog.open} 
                 handleClose={handleDialogClose} 
-                type={dialogType} 
-                title={dialogTitle} 
-                message={dialogMessage} 
-                transparency={dialogTransparency}
-                color={dialogColor}
+                type={dialog.type} 
+                title={dialog.title} 
+                message={dialog.message} 
+                transparency={dialog.transparency}
+                color={dialog.color}
             />
         </div>
     );

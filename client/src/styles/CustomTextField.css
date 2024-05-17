@@ -4,6 +4,12 @@
     width: 100%;
 }
 
+.custom-text-field {
+    width: 100%;
+    margin-top: 1px; /* Adjust top margin */
+    margin-bottom: 1px; /* Adjust bottom margin */
+  }
+
 .custom-text-field .MuiOutlinedInput-root fieldset {
     border-color: rgba(255, 255, 255, 0.5);
 }

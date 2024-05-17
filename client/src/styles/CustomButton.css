@@ -1,24 +1,26 @@
 .custom-button {
     border: 1px solid rgba(128, 128, 128, 0.3);
-    color: white; /* Default text color */
+    color: white;
     padding: 0 40px;
-    box-shadow: 0 3px 5px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 5px 2px rgba(0, 0, 0, 0.6);
     text-transform: capitalize;
     transition: all 0.3s ease;
     margin: 20px auto;
     display: block;
-    opacity: 0.65; /* Default opacity for the button */
+    opacity: 0.85; /* Default opacity for the button */
+    background-color: rgba(0, 128, 128, 0.8); /* Default background color */
 }
 
 .custom-button:hover {
-    opacity: 0.85; /* Maintain button opacity on hover */
+    background: rgba(255, 255, 255, 0.7); /* Background color on hover */
+    opacity: 1; /* Increased button opacity on hover */
 }
 
 .custom-button .button-text {
-    opacity: 0.9; /* Default text opacity */
+    opacity: 0.9;
     transition: opacity 0.3s ease;
 }
 
 .custom-button:hover .button-text {
-    opacity: 1; /* Increased text opacity on hover */
+    opacity: 1;
 }

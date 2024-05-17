@@ -1,11 +1,9 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-// import Navbar from './components/Navbar';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Chat from './pages/Chat';
 import Upload from './pages/Upload';
 import About from './pages/About';
-// import Home from './pages/Home';
-import Auth from './pages/Auth'; // Import the new Auth component
+import Auth from './pages/Auth';
 
 function App() {
   return (
@@ -15,7 +13,7 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/about" element={<About />} />
-        <Route path="/auth" element={<Auth />} /> {/* Add route for Auth */}
+        <Route path="/auth" element={<Auth />} />
       </Routes>
     </BrowserRouter>
   );
