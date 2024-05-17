@@ -1,0 +1,36 @@
+.custom-text-field .MuiOutlinedInput-root {
+    border-radius: 25px;
+    height: 40px;
+    width: 100%;
+}
+
+.custom-text-field .MuiOutlinedInput-root fieldset {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.custom-text-field .MuiOutlinedInput-root:hover fieldset {
+    border-color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.custom-text-field .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.custom-text-field .MuiInputBase-input {
+    color: white;
+    height: 20px;
+    padding: 10px 14px; /* Adjust the padding as needed */
+}
+
+.custom-text-field .MuiInputLabel-root {
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: -8px; /* Adjust the negative margin to move the label higher */
+    margin-left: -0px; /* Adjust the negative margin to move the label to the left */
+}
+
+.custom-text-field .MuiInputLabel-root.Mui-focused {
+    color: rgba(255, 255, 255, 1);
+    margin-top: -8px; /* Keep the same adjustment for the focused state */
+    margin-left: -10px; /* Keep the same adjustment for the focused state */
+}

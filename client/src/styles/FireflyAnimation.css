@@ -1,0 +1,30 @@
+/* FireflyAnimation.css */
+
+.firefly-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none; /* Ensure fireflies do not interfere with clicks */
+}
+
+.firefly {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: yellow;
+    border-radius: 50%;
+    box-shadow: 0 0 10px yellow;
+    animation: moveRandomly 5s linear forwards; /* Increase speed by reducing duration */
+}
+
+@keyframes moveRandomly {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(calc(100vw * var(--x)), calc(100vh * var(--y)));
+    }
+}

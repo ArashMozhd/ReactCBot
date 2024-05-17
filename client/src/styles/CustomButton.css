@@ -1,0 +1,24 @@
+.custom-button {
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    color: white; /* Default text color */
+    padding: 0 40px;
+    box-shadow: 0 3px 5px 2px rgba(0, 0, 0, 0.1);
+    text-transform: capitalize;
+    transition: all 0.3s ease;
+    margin: 20px auto;
+    display: block;
+    opacity: 0.65; /* Default opacity for the button */
+}
+
+.custom-button:hover {
+    opacity: 0.85; /* Maintain button opacity on hover */
+}
+
+.custom-button .button-text {
+    opacity: 0.9; /* Default text opacity */
+    transition: opacity 0.3s ease;
+}
+
+.custom-button:hover .button-text {
+    opacity: 1; /* Increased text opacity on hover */
+}
