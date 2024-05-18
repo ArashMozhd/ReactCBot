@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Tabs, Tab, CircularProgress } from '@mui/material';
+import { Typography, Tabs, Tab, CircularProgress, Link } from '@mui/material';
 import CustomButton from '../components/CustomButton';
 import CustomTextField from '../components/CustomTextField';
 import loginLogo from '../assets/login.gif';
@@ -16,6 +16,7 @@ function Auth() {
     const [registerFullName, setRegisterFullName] = useState('');
     const [registerEmail, setRegisterEmail] = useState('');
     const [registerPassword, setRegisterPassword] = useState('');
+    const [resetEmail, setResetEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [dialog, setDialog] = useState({
@@ -27,6 +28,7 @@ function Auth() {
         color: ''
     });
     const [registrationSuccess, setRegistrationSuccess] = useState(false);
+    const [showResetPassword, setShowResetPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleTabChange = (event, newIndex) => {
@@ -49,17 +51,27 @@ function Auth() {
         setRegisterFullName('');
         setRegisterEmail('');
         setRegisterPassword('');
+        setResetEmail('');
     };
 
     const handleSubmit = async (e, type) => {
         e.preventDefault();
         setLoading(true);
         setError('');
-        const url = type === 'login' ? 'http://127.0.0.1:8000/login' : 'http://127.0.0.1:8000/register';
-        const body = type === 'login'
-            ? JSON.stringify({ email: loginEmail, password: loginPassword })
-            : JSON.stringify({ full_name: registerFullName, email: registerEmail, password: registerPassword });
-        
+        let url;
+        let body;
+
+        if (type === 'login') {
+            url = 'http://127.0.0.1:8000/login';
+            body = JSON.stringify({ email: loginEmail, password: loginPassword });
+        } else if (type === 'register') {
+            url = 'http://127.0.0.1:8000/register';
+            body = JSON.stringify({ full_name: registerFullName, email: registerEmail, password: registerPassword });
+        } else if (type === 'reset') {
+            url = 'http://127.0.0.1:8000/reset-password';
+            body = JSON.stringify({ email: resetEmail });
+        }
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -78,7 +90,7 @@ function Auth() {
             if (response.ok) {
                 if (type === 'register') {
                     setRegistrationSuccess(true);
-                } else {
+                } else if (type === 'login') {
                     localStorage.setItem('token', data.token);
                     const userResponse = await fetch('http://127.0.0.1:8000/user', {
                         headers: { 'Authorization': `Bearer ${data.token}` }
@@ -100,7 +112,11 @@ function Auth() {
             <div className="login-page-1-wrapper">
                 <article>
                     <header>
-                        <img src={tabIndex === 0 ? loginLogo : registerLogo} alt="Logo" className="auth-logo" />
+                        <img 
+                            src={tabIndex === 0 ? loginLogo : registerLogo} 
+                            alt="Logo" 
+                            className="auth-logo" 
+                        />
                         <Typography variant="h5" component="h1" gutterBottom align="center" className="auth-header">
                             {tabIndex === 0 ? 'Login' : 'Registration'}
                         </Typography>
@@ -110,7 +126,7 @@ function Auth() {
                         <Tab label="Register" />
                     </Tabs>
                     {error && <Typography color="error" align="center">{error}</Typography>}
-                    {tabIndex === 0 && (
+                    {!showResetPassword && tabIndex === 0 && (
                         <form onSubmit={(e) => handleSubmit(e, 'login')} className="auth-form">
                             <CustomTextField
                                 label="Email"
@@ -172,6 +188,14 @@ function Auth() {
                             >
                                 {loading ? <CircularProgress size={24} /> : 'Login'}
                             </CustomButton>
+                            <Link 
+                                component="button"
+                                variant="body2"
+                                onClick={() => setShowResetPassword(true)}
+                                className="reset-password-link"
+                            >
+                                Forgot password?
+                            </Link>
                         </form>
                     )}
                     {tabIndex === 1 && (
@@ -258,6 +282,56 @@ function Auth() {
                             >
                                 {loading ? <CircularProgress size={24} /> : 'Register'}
                             </CustomButton>
+                        </form>
+                    )}
+                    {showResetPassword && (
+                        <form onSubmit={(e) => handleSubmit(e, 'reset')} className="auth-form">
+                            <CustomTextField
+                                label="Email"
+                                type="email"
+                                value={resetEmail}
+                                onChange={(e) => setResetEmail(e.target.value)}
+                                required
+                                width="270px"
+                                borderRadius="20px"
+                                inputColor="white"
+                                padding="15px"
+                                labelColor="rgba(255, 255, 255, 0.8)"
+                                labelMarginTop="-5px"
+                                labelMarginLeft="0px"
+                                labelFocusedColor="rgba(255, 255, 255, 1)"
+                                labelFocusedMarginTop="-5px"
+                                labelFocusedMarginLeft="-10px"
+                                borderColor="rgba(255, 255, 255, 0.5)"
+                                hoverBorderColor="rgba(255, 255, 255, 0.8)"
+                                focusedBorderColor="rgba(255, 255, 255, 1)"
+                                marginTop="0px"
+                                marginBottom="0px"
+                            />
+                            <CustomButton
+                                type="submit"
+                                roundness="25px"
+                                transparency={0.5}
+                                backgroundColor="rgba(255, 255, 255, 0.1)"
+                                textSize="18px"
+                                textColor="white"
+                                hoverTextOpacity={1}
+                                width="180px"
+                                height="auto"
+                                marginTop="10px"
+                                marginLeft="20px"
+                                marginBottom="20px"
+                            >
+                                {loading ? <CircularProgress size={24} /> : 'Reset Password'}
+                            </CustomButton>
+                            <Link 
+                                component="button"
+                                variant="body2"
+                                onClick={() => setShowResetPassword(false)}
+                                className="reset-password-link"
+                            >
+                                Back to login
+                            </Link>
                         </form>
                     )}
                 </article>
