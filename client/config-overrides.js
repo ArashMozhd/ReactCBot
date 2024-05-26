@@ -1,14 +1,9 @@
-const webpack = require('webpack');
+const { override, addWebpackAlias } = require('customize-cra');
+const path = require('path');
 
-module.exports = function override(config, env) {
-  config.resolve.fallback = {
-    ...config.resolve.fallback,
-    process: require.resolve('process/browser')
-  };
-  config.plugins = (config.plugins || []).concat([
-    new webpack.ProvidePlugin({
-      process: 'process/browser'
-    })
-  ]);
-  return config;
-};
+module.exports = override(
+  addWebpackAlias({
+    ['@components']: path.resolve(__dirname, 'src/components'),
+    // Add other aliases as needed
+  })
+);

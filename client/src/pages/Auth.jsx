@@ -62,15 +62,18 @@ function Auth() {
         let body;
 
         if (type === 'login') {
-            url = 'http://127.0.0.1:8000/login';
+            url = 'http://localhost:8000/login'; // Updated URL
             body = JSON.stringify({ email: loginEmail, password: loginPassword });
         } else if (type === 'register') {
-            url = 'http://127.0.0.1:8000/register';
+            url = 'http://localhost:8000/register'; // Updated URL
             body = JSON.stringify({ full_name: registerFullName, email: registerEmail, password: registerPassword });
         } else if (type === 'reset') {
-            url = 'http://127.0.0.1:8000/reset-password';
+            url = 'http://localhost:8000/reset-password'; // Updated URL
             body = JSON.stringify({ email: resetEmail });
         }
+
+        console.log('Request URL:', url);
+        console.log('Request Body:', body);
 
         try {
             const response = await fetch(url, {
@@ -79,6 +82,8 @@ function Auth() {
                 body
             });
             const data = await response.json();
+            console.log('Response Data:', data);
+
             setDialog({
                 open: true,
                 type: response.ok ? 'success' : 'failure',
@@ -87,20 +92,23 @@ function Auth() {
                 transparency: 0.8,
                 color: ''
             });
+
             if (response.ok) {
                 if (type === 'register') {
                     setRegistrationSuccess(true);
                 } else if (type === 'login') {
-                    localStorage.setItem('token', data.token);
-                    const userResponse = await fetch('http://127.0.0.1:8000/user', {
-                        headers: { 'Authorization': `Bearer ${data.token}` }
+                    localStorage.setItem('token', data.access_token);
+                    const userResponse = await fetch('http://localhost:8000/users/me', {
+                        headers: { 'Authorization': `Bearer ${data.access_token}` }
                     });
                     const userData = await userResponse.json();
+                    console.log('User Data:', userData);
                     navigate('/home', { state: { fullName: userData.full_name } });
                 }
             }
             resetFields(); // Reset fields after submission
         } catch (err) {
+            console.error('Error:', err);
             setError('An unexpected error occurred');
         } finally {
             setLoading(false);

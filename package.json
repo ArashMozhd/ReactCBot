@@ -4,6 +4,8 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.17",
     "@mui/material": "^5.15.18",
-    "bootstrap": "^5.3.3"
+    "@syncfusion/ej2-react-filemanager": "^25.2.3",
+    "bootstrap": "^5.3.3",
+    "cors": "^2.8.5"
   }
 }
