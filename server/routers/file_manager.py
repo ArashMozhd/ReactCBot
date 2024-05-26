@@ -1,53 +1,53 @@
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
-from fastapi.responses import JSONResponse, FileResponse
-import shutil
-import os
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-import models
-import schemas
 from database import get_db
-from routers.auth import get_current_user
+from routers.auth import get_current_user, oauth2_scheme
+import os
+import shutil
+import logging
+import models
 
 UPLOAD_DIRECTORY = "./uploaded_files/"
 SHARED_DIRECTORY = "shared/"
 
 router = APIRouter()
 
-@router.post("/upload/")
-async def upload_file(file: UploadFile = File(...), current_user: models.User = Depends(get_current_user)):
-    user_directory = current_user.full_name.replace(" ", "")
-    user_path = os.path.join(UPLOAD_DIRECTORY, user_directory)
-    os.makedirs(user_path, exist_ok=True)
+@router.post("/file-operations")
+async def file_operations(request: Request, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    # Log the request headers to verify the token is sent
+    logging.info(f"Request Headers: {request.headers}")
 
-    file_path = os.path.join(user_path, file.filename)
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    # Try to get the current user using the token
+    try:
+        current_user = get_current_user(token, db)
+        logging.info(f'Authenticated user: {current_user.full_name}')
+    except HTTPException as e:
+        logging.error(f"Authentication failed: {e.detail}")
+        return JSONResponse(content={"error": "Authentication failed"}, status_code=e.status_code)
+
+    # Process the request
+    form = await request.json()
+    action = form.get("action")
     
-    return JSONResponse(content={"filename": file.filename})
+    logging.info(f'Action received: {action}')
 
-@router.get("/files/")
-async def list_files(current_user: models.User = Depends(get_current_user)):
-    user_directory = current_user.full_name.replace(" ", "")
-    user_path = os.path.join(UPLOAD_DIRECTORY, user_directory)
-    shared_path = os.path.join(UPLOAD_DIRECTORY, SHARED_DIRECTORY)
+    if action == "read":
+        logging.info("Read action triggered")
+        return {"action": "read", "files": []}  # Example response, replace with actual logic
 
-    user_files = os.listdir(user_path) if os.path.exists(user_path) else []
-    shared_files = os.listdir(shared_path) if os.path.exists(shared_path) else []
+    elif action == "upload":
+        file: UploadFile = form.get("file")
+        if file:
+            user_directory = current_user.full_name.replace(" ", "")
+            user_path = os.path.join(UPLOAD_DIRECTORY, user_directory)
+            os.makedirs(user_path, exist_ok=True)
 
-    return {"user_files": user_files, "shared_files": shared_files}
+            file_path = os.path.join(user_path, file.filename)
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+            
+            logging.info(f'File uploaded: {file.filename}')
+            return JSONResponse(content={"filename": file.filename})
 
-@router.get("/download/{file_name}")
-async def download_file(file_name: str, current_user: models.User = Depends(get_current_user)):
-    user_directory = current_user.full_name.replace(" ", "")
-    file_path = os.path.join(UPLOAD_DIRECTORY, user_directory, file_name)
-
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="File not found")
-    
-    return FileResponse(path=file_path, filename=file_name)
-
-@router.get("/shared-files/")
-async def list_shared_files():
-    shared_path = os.path.join(UPLOAD_DIRECTORY, SHARED_DIRECTORY)
-    shared_files = os.listdir(shared_path) if os.path.exists(shared_path) else []
-    return {"shared_files": shared_files}
+    return JSONResponse(content={"error": "Invalid action"}, status_code=400)

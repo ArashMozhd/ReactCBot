@@ -1,4 +1,3 @@
-# routers/auth.py
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
@@ -8,13 +7,17 @@ import models
 import schemas
 import crud
 from database import get_db
+import logging
+import os
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = "your_secret_key"
+SECRET_KEY = "your_secret_key"  # Ensure this key is consistent
 ALGORITHM = "HS256"
 
 def create_access_token(data: dict):
@@ -23,17 +26,21 @@ def create_access_token(data: dict):
     return encoded_jwt
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    logger.info(f'Token received: {token}')
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        logger.info(f'Payload decoded: {payload}')
         user_id: int = payload.get("sub")
         if user_id is None:
+            logger.error("No user_id found in token payload")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid authentication credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
         token_data = schemas.TokenData(user_id=user_id)
-    except JWTError:
+    except JWTError as e:
+        logger.error(f'JWT Error: {str(e)}')
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
@@ -41,6 +48,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         )
     user = crud.get_user(db, user_id=token_data.user_id)
     if user is None:
+        logger.error("User not found")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
