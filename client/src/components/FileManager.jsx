@@ -1,32 +1,20 @@
 import React, { useEffect } from 'react';
-import { FileManager } from '@progress/kendo-react-upload';
-import '@progress/kendo-theme-default/dist/all.css';
+import { FileManagerComponent } from '@syncfusion/ej2-react-filemanager';
 
-const MyFileManager = () => {
+const FileManager = () => {
   const token = localStorage.getItem('token');
+  console.log('Token from local storage:', token); // Debugging line to ensure token is fetched
 
-  const onDataStateChange = (event) => {
-    console.log(event.data);
-    // Handle data state change
-  };
-
-  const onExecute = (event) => {
-    const { target, method, requestData } = event;
-    console.log('Execute method:', method, 'Request data:', requestData);
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(requestData)
-    };
-
-    fetch(target, options)
-      .then(response => response.json())
-      .then(data => console.log('Response:', data))
-      .catch(error => console.error('Error:', error));
+  const beforeSend = (args) => {
+    if (token) {
+      args.ajaxSettings.headers = {
+        ...args.ajaxSettings.headers,
+        'Authorization': `Bearer ${token}`
+      };
+      console.log('Ajax settings:', args.ajaxSettings); // Debugging line to check ajax settings
+    } else {
+      console.error('No token found in local storage.');
+    }
   };
 
   useEffect(() => {
@@ -37,16 +25,18 @@ const MyFileManager = () => {
 
   return (
     <div>
-      <FileManager
-        dataUrl="http://localhost:8000/file-operations"
-        uploadUrl="http://localhost:8000/upload"
-        downloadUrl="http://localhost:8000/download"
-        deleteUrl="http://localhost:8000/delete"
-        onExecute={onExecute}
-        onDataStateChange={onDataStateChange}
+      <FileManagerComponent
+        id="file-manager"
+        ajaxSettings={{
+          url: 'http://localhost:8000/file-operations',
+          getImageUrl: 'http://localhost:8000/get-image',
+          uploadUrl: 'http://localhost:8000/upload',
+          downloadUrl: 'http://localhost:8000/download'
+        }}
+        beforeSend={beforeSend}
       />
     </div>
   );
 };
 
-export default MyFileManager;
+export default FileManager;

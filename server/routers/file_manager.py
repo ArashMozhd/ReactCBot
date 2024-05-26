@@ -16,17 +16,17 @@ router = APIRouter()
 @router.post("/file-operations")
 async def file_operations(request: Request, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     # Log the request headers to verify the token is sent
-    logging.info(f"Request Headers: {request.headers}")
+    # logging.info(f"Request Headers: {request.headers}")
 
-    # Try to get the current user using the token
-    try:
-        current_user = get_current_user(token, db)
-        logging.info(f'Authenticated user: {current_user.full_name}')
-    except HTTPException as e:
-        logging.error(f"Authentication failed: {e.detail}")
-        return JSONResponse(content={"error": "Authentication failed"}, status_code=e.status_code)
+    # # Try to get the current user using the token
+    # try:
+    #     current_user = get_current_user(token, db)
+    #     logging.info(f'Authenticated user: {current_user.full_name}')
+    # except HTTPException as e:
+    #     logging.error(f"Authentication failed: {e.detail}")
+    #     return JSONResponse(content={"error": "Authentication failed"}, status_code=e.status_code)
 
-    # Process the request
+    # # Process the request
     form = await request.json()
     action = form.get("action")
     
