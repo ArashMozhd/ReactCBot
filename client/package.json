@@ -8,20 +8,26 @@
     "@mui/icons-material": "^5.15.17",
     "@mui/material": "^5.15.18",
     "@react-login-page/page1": "^1.0.4",
+    "@syncfusion/ej2-react-filemanager": "^25.2.3",
+    "@syncfusion/ej2-react-grids": "^25.2.5",
+    "@syncfusion/ej2-react-inputs": "^25.2.5",
+    "@syncfusion/ej2-react-navigations": "^25.2.4",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.2",
     "react": "^18.3.1",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.3.1",
+    "react-dropzone": "^14.2.3",
     "react-router-dom": "^6.23.1",
     "react-scripts": "^3.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -41,5 +47,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1"
   }
 }
